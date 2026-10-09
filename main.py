@@ -3,7 +3,7 @@ import sys
 import os
 from player import player
 from floor import floor
-from platform import platform
+from plat import platform
 from enemy import enemy
 
 # --- PyInstaller Asset Path Fix ---
