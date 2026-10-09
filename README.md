@@ -1,3 +1,8 @@
+# beware of jeffery
+
+he might try to hump you
+
+
 # The Revenge of Farts
 
 A short, atmospheric 2D platformer prototype built entirely from scratch using **Python** and **Pygame**. 
@@ -31,4 +36,4 @@ If you want to run the raw Python files instead of the `.exe`:
 1. Make sure you have Python installed.
 2. Clone this repository:
    ```bash
-   git clone https://github.com/YourUsername/the-revenge-of-farts.git
+   git clone https://github.com/amirreza13901/the-revenge-of-farts.git
