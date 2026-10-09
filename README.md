@@ -1,6 +1,6 @@
-# beware of jeffery
+# Beware of jeffery
 
-he might try to hump you
+He might try to hump you
 
 
 # The Revenge of Jeffrey
