@@ -3,7 +3,7 @@
 he might try to hump you
 
 
-# The Revenge of Farts
+# The Revenge of Jeffrey
 
 A short, atmospheric 2D platformer prototype built entirely from scratch using **Python** and **Pygame**. 
 
