@@ -84,12 +84,13 @@ player_obj = player(10, win_h - 175, win)
 floor_obj = floor(level_width, win_h, win)
 enemy1 = enemy(win, level_width, win_h)
 
+running = True
 lose = False
 e_lose = False
 
 # --- Reset Function ---
 def reset_game():
-    global camera_x, camera_y, lose, e_lose
+    global camera_x, camera_y, lose, e_lose, running
     
     # Reset Player
     player_obj.player_health = 100
@@ -113,6 +114,7 @@ def reset_game():
     camera_y = 0
     lose = False
     e_lose = False
+    running = True # Now works because of 'global'
     pygame.display.set_caption('The Revenge of Farts')
     print("Game Reset!")
 
@@ -126,48 +128,55 @@ while run:
             if event.key == pygame.K_r:
                 reset_game()
 
-    # 1. Update Objects
-    player_obj.move(win_w, win_h, floor_obj, platforms, enemy1, camera_x, camera_y)
-    enemy1.move(floor_obj, player_obj)
+    if running:
+        # 1. Update Objects
+        player_obj.move(win_w, win_h, floor_obj, platforms, enemy1, camera_x, camera_y)
+        enemy1.move(floor_obj, player_obj)
 
-    # 2. Camera Logic (Lerp & Clamp)
-    t_camera_x = player_obj.player_base.centerx - win_w // 2
-    t_camera_y = player_obj.player_base.centery - win_h // 2
-    camera_x += (t_camera_x - camera_x) * 0.1
-    camera_y += (t_camera_y - camera_y) * 0.1
+        # 2. Camera Logic (Lerp & Clamp)
+        t_camera_x = player_obj.player_base.centerx - win_w // 2
+        t_camera_y = player_obj.player_base.centery - win_h // 2
+        camera_x += (t_camera_x - camera_x) * 0.1
+        camera_y += (t_camera_y - camera_y) * 0.1
 
-    if camera_x < 0:
-        camera_x = 0
-    if camera_x > level_width - win_w:
-        camera_x = level_width - win_w
-    if camera_y < 0:
-        camera_y = 0
-    if camera_y > level_height - win_h:
-        camera_y = level_height - win_h
+        if camera_x < 0:
+            camera_x = 0
+        if camera_x > level_width - win_w:
+            camera_x = level_width - win_w
+        if camera_y < 0:
+            camera_y = 0
+        if camera_y > level_height - win_h:
+            camera_y = level_height - win_h
 
-    # 3. Draw Everything
-    bg_fill(win_w, win_h, win)
-    floor_obj.draw(camera_x, camera_y)
-    enemy1.draw(camera_x, camera_y)
-    player_obj.draw(camera_x, camera_y)
+        # 3. Draw Everything
+        bg_fill(win_w, win_h, win)
+        floor_obj.draw(camera_x, camera_y)
+        enemy1.draw(camera_x, camera_y)
+        player_obj.draw(camera_x, camera_y)
 
-    for p in platforms:
-        p.draw((0, 0, 200), camera_x, camera_y)
+        for p in platforms:
+            p.draw((0, 0, 200), camera_x, camera_y)
 
-    draw_ui(win, player_obj)
+        draw_ui(win, player_obj)
 
-    # 4. Check Win/Loss Conditions
-    lose = check_if_player_is_dead(player_obj)
-    e_lose = check_if_enemy_is_dead(enemy1)
-    
-    if lose:
-        bg_remove(win_w, win_h, (100, 0, 0))
-        board_text('YOU LOSE', score_font, (0, 0, 0), win_w // 2 - 40, win_h // 2)
-        board_text('press R to restart', score_font, (0, 0, 0), win_w // 2 - 60, win_h // 2 + 40)
-    if e_lose:
-        bg_remove(win_w, win_h, (0, 100, 0))
-        board_text('YOU WIN', score_font, (0, 0, 0), win_w // 2 - 40, win_h // 2)
-        board_text('press R to restart', score_font, (0, 0, 0), win_w // 2 - 60, win_h // 2 + 40)
+        # 4. Check Win/Loss Conditions (inside the 'running' block)
+        lose = check_if_player_is_dead(player_obj)
+        e_lose = check_if_enemy_is_dead(enemy1)
+        
+        if lose or e_lose:
+            running = False # Freeze the game updates
+
+    else:
+        # 5. Game Over Screen (runs when 'running' is False)
+        if lose:
+            bg_remove(win_w, win_h, (100, 0, 0))
+            board_text('YOU LOSE', score_font, (0, 0, 0), win_w // 2 - 40, win_h // 2)
+            board_text('press R to restart', score_font, (0, 0, 0), win_w // 2 - 60, win_h // 2 + 40)
+            
+        if e_lose:
+            bg_remove(win_w, win_h, (0, 100, 0))
+            board_text('YOU WIN', score_font, (0, 0, 0), win_w // 2 - 40, win_h // 2)
+            board_text('press R to restart', score_font, (0, 0, 0), win_w // 2 - 60, win_h // 2 + 40)
 
     pygame.display.update()
     clock.tick(fps)
